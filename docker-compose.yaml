@@ -1,0 +1,29 @@
+version: '3'
+services:
+  appA1:
+    image: server
+    environment:
+      - APP=appA
+    ports:
+      - "8081:5000"
+
+  appA2:
+    image: server
+    environment:
+      - APP=appA
+    ports:
+      - "8082:5000"
+
+  appB1:
+    image: server
+    environment:
+      - APP=appB
+    ports:
+      - "9081:5000"
+
+  appB2:
+    image: server
+    environment:
+      - APP=appB
+    ports:
+      - "9082:5000"
