@@ -3,16 +3,24 @@ hosts:
     servers:
       - localhost:8081
       - localhost:8082
+      - localhost:9081
   - host: www.appB.com
     servers:
-      - localhost:9081
       - localhost:9082
+      - localhost:9999
+      - localhost:8888
+  - host: www.appC.com
+    servers:
+      - localhost:1111
+      - localhost:1212
 paths:
   - path: /appA
     servers:
       - localhost:8081
       - localhost:8082
+      - localhost:9081
   - path: /appB
     servers:
-      - localhost:9081
       - localhost:9082
+      - localhost:9999
+      - localhost:8888

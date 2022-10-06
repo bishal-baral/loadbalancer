@@ -13,11 +13,9 @@ def load_configuration(path):
 def transform_backends_from_config(config):
     register = {}
     for entry in config.get('hosts', []):
-        register.update({entry["host"]: 
-            [Server(endpoint) for endpoint in entry["servers"]]})
+        register.update({entry["host"]: [Server(endpoint) for endpoint in entry["servers"]]})
     for entry in config.get('paths', []):
-        register.update({entry["path"]: 
-            [Server(endpoint) for endpoint in entry["servers"]]})
+        register.update({entry["path"]: [Server(endpoint) for endpoint in entry["servers"]]})
     return register
 
 def get_healthy_server(host, register):

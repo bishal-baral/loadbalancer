@@ -4,6 +4,7 @@ services:
     image: server
     environment:
       - APP=appA
+      - ENDPOINT=localhost:8081
     ports:
       - "8081:5000"
 
@@ -11,19 +12,22 @@ services:
     image: server
     environment:
       - APP=appA
+      - ENDPOINT=localhost:8082
     ports:
       - "8082:5000"
+
+  appA3:
+    image: server
+    environment:
+      - APP=appA
+      - ENDPOINT=localhost:9081
+    ports:
+      - "9081:5000"
 
   appB1:
     image: server
     environment:
       - APP=appB
-    ports:
-      - "9081:5000"
-
-  appB2:
-    image: server
-    environment:
-      - APP=appB
+      - ENDPOINT=localhost:9082
     ports:
       - "9082:5000"
