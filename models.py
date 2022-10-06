@@ -1,5 +1,9 @@
 import requests
 class Server:
+    '''
+    Server class to represent a backend server that takes the endpoint and implement a health-checking method
+    to record the server status
+    '''
     def __init__(self, endpoint, path="/healthcheck"):
         self.endpoint = endpoint
         self.path = path
