@@ -7,3 +7,15 @@ The goal of this project is to build a microservices architecture from scratch a
 1. Familiarizing with Docker
 2. **Implementing a Load Balancer using Flask**
   - adapted from https://medium.com/load-balancer-series
+  - instructions for testing the loadbalancer
+      ```
+        pip install virtualenv
+        virtualenv lb
+        source lb/bin/activate
+        pip install pytest
+        pip install responses
+        pip install flask
+        pip install pyyaml
+        make test
+        docker build -t server .
+        make test```
