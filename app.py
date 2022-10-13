@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import *
 import os
 
 app = Flask(__name__)
 
 @app.route('/')
 def sample():
-    return "This is the {} application. Serving on {}.".format(os.environ["APP"], os.environ["ENDPOINT"])
+    return "This is the {} application. Serving on {}. Custom Header: {}, Host Header: {}".format(os.environ["APP"], os.environ["ENDPOINT"], request.headers.get("MyCustomHeader", "None"),request.headers.get("Host", os.environ["ENDPOINT"]))
 
 @app.route('/healthcheck')
 def healthcheck():

@@ -23,3 +23,17 @@ def get_healthy_server(host, register):
         return random.choice([server for server in register[host] if server.healthy])
     except IndexError:
         return None
+
+def process_header_rules(config, host, rules, modify):
+    modify_options = {"header": "header_rules"}
+    for entry in config.get('hosts', []):
+        if host == entry['host']: 
+            header_rules = entry.get(modify_options[modify], {})
+            for instruction, modify_headers in header_rules.items():
+                if instruction == "add":
+                    rules.update(modify_headers)
+                if instruction == "remove":
+                    for key in modify_headers.keys():
+                        if key in rules:
+                            rules.pop(key) 
+    return rules

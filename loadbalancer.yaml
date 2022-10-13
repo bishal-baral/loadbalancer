@@ -1,5 +1,10 @@
 hosts:
   - host: www.appA.com
+    header_rules:
+      add: 
+        MyCustomHeader: Test
+      remove: 
+        Host: www.appA.com
     servers:
       - localhost:8081
       - localhost:8082

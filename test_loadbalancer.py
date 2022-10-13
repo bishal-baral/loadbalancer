@@ -9,11 +9,11 @@ def client():
 
 def test_host_routing_appA(client):
     result = client.get('/', headers={"Host":"www.appA.com"})
-    assert re.match("This is the appA application. Serving on localhost:\d+.", result.data.decode('utf-8')) != None
+    assert re.match("This is the appA application. Serving on localhost:\d+. Custom Header: Test, Host Header: localhost:\d+", result.data.decode('utf-8')) != None  
 
 def test_host_routing_appB(client):
     result = client.get('/', headers={"Host":"www.appB.com"})
-    assert b'This is the appB application. Serving on localhost:9082.' == result.data
+    assert b'This is the appB application. Serving on localhost:9082. Custom Header: None, Host Header: www.appB.com' == result.data
 
 def test_host_routing_notfound(client):
     result = client.get('/', headers={"Host":"www.random.com"})
@@ -22,7 +22,7 @@ def test_host_routing_notfound(client):
 
 def test_server_bad_servers(client):
     result = client.get('/', headers={"Host":"www.appB.com"})
-    assert b'This is the appB application. Serving on localhost:9082.' == result.data
+    assert b'This is the appB application. Serving on localhost:9082. Custom Header: None, Host Header: www.appB.com' == result.data
 
 def test_server_no_servers(client):
     result = client.get('/', headers={"Host":"www.appC.com"})

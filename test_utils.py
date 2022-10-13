@@ -1,4 +1,4 @@
-from utils import get_healthy_server, transform_backends_from_config
+from utils import get_healthy_server, transform_backends_from_config, process_header_rules
 from models import Server
 import pytest
 import yaml
@@ -50,3 +50,33 @@ def test_get_healthy_server():
     assert get_healthy_server("www.random.com", register) == None
     assert get_healthy_server("/appA", register) == healthy_server
     assert get_healthy_server("/appB", register) == None
+
+def test_process_header_rules():
+    input = yaml.safe_load('''
+        hosts:
+          - host: www.appA.com
+            header_rules:
+              add:
+                MyCustomHeader: Test
+              remove:
+                Host: www.appA.com
+            servers:
+              - localhost:8081
+              - localhost:8082
+          - host: www.appB.com
+            servers:
+              - localhost:9081
+              - localhost:9082
+        paths:
+          - path: /appA
+            servers:
+              - localhost:8081
+              - localhost:8082
+          - path: /appB
+            servers:
+              - localhost:9081
+              - localhost:9082
+    ''')
+    headers = {"Host": "www.appA.com"}
+    results = process_header_rules(input, "www.appA.com", headers, "header")
+    assert results == {"MyCustomHeader": "Test"}
