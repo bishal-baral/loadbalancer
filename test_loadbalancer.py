@@ -16,6 +16,10 @@ def test_host_routing_appB(client):
     result = client.get('/', headers={"Host":"www.appB.com"})
     assert b'This is the appB application. Serving on localhost:9082. Custom Header: None, Host Header: www.appB.com, Custom Param: None' == result.data
 
+def test_rewrite_host_routing(client):
+    result = client.get('/v1', headers={"Host": "www.appA.com"})
+    assert b'This is V2' == result.data
+
 def test_host_routing_notfound(client):
     result = client.get('/', headers={"Host":"www.random.com"})
     assert b'Not Found' in result.data

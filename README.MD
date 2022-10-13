@@ -12,10 +12,8 @@ The goal of this project is to build a microservices architecture from scratch a
         pip install virtualenv
         virtualenv lb
         source lb/bin/activate
-        pip install pytest
-        pip install responses
-        pip install flask
-        pip install pyyaml
+        pip install pytest responses flask pyyaml
         make test
         docker build -t server .
-        make test```
+        make test
+      ```
