@@ -1,6 +1,6 @@
 from flask import Flask, request
 import requests
-from utils import load_configuration, transform_backends_from_config, get_healthy_server, process_header_rules
+from utils import load_configuration, transform_backends_from_config, get_healthy_server, process_rules
 from tasks import healthcheck
 
 loadbalancer = Flask(__name__)
@@ -17,8 +17,9 @@ def router(path="/"):
             healthy_server = get_healthy_server(entry["host"], updated_register)
             if not healthy_server:
                 return "No Backends servers available", 503
-            headers = process_header_rules(config, host_header, {k:v for k,v in request.headers.items()}, "header" )
-            response = requests.get("http://{}".format(healthy_server.endpoint), headers=headers)
+            headers = process_rules(config, host_header, {k:v for k,v in request.headers.items()}, "header" )
+            params = process_rules(config, host_header, {k:v for k,v in request.args.items()}, "param")
+            response = requests.get("http://{}".format(healthy_server.endpoint), headers=headers, params=params)
             return response.content, response.status_code
     
     for entry in config["paths"]:
@@ -28,5 +29,5 @@ def router(path="/"):
                 return "No Backends servers available", 503
             response = requests.get("http://{}".format(healthy_server.endpoint))
             return response.content, response.status_code
-            
+
     return "Not Found", 404
