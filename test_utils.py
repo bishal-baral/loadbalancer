@@ -1,4 +1,4 @@
-from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules
+from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules, least_connections
 from models import Server
 import yaml
 
@@ -137,3 +137,18 @@ def test_process_rewrite_rules():
     path = "localhost:8081/v1"
     results = process_rewrite_rules(input, "www.appA.com", path)
     assert results == "localhost:8081/v2"
+
+def test_least_connections_empty_list():
+    result = least_connections([])
+    assert result == None  
+
+def test_least_connections():
+    backend1 = Server("localhost:8081")
+    backend1.open_connections = 10
+    backend2 = Server("localhost:8082")
+    backend2.open_connections = 5
+    backend3 = Server("localhost:8083")
+    backend3.open_connections = 2
+    servers = [backend1, backend2, backend3]
+    result = least_connections(servers)
+    assert result == backend3

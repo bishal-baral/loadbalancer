@@ -22,7 +22,10 @@ def router(path="/"):
             rewrite_path = ""
             if path == "v1":
                 rewrite_path = process_rewrite_rules(config, host_header, path)
+            healthy_server.open_connections += 1
             response = requests.get("http://{}{}".format(healthy_server.endpoint, "/" + rewrite_path), headers=headers, params=params)
+            healthy_server.open_connections -= 1
+            
             return response.content, response.status_code
     
     for entry in config["paths"]:
