@@ -1,5 +1,12 @@
 hosts:
   - host: www.appA.com
+    firewall_rules:
+      ip_reject:
+        - 10.192.0.1
+        - 10.192.0.2
+      path_reject:
+        - /messages
+        - /apps
     header_rules:
       add: 
         MyCustomHeader: Test

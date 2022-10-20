@@ -1,4 +1,4 @@
-from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules, least_connections
+from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules, least_connections, process_firewall_rules_flag
 from models import Server
 import yaml
 
@@ -152,3 +152,60 @@ def test_least_connections():
     servers = [backend1, backend2, backend3]
     result = least_connections(servers)
     assert result == backend3
+
+def test_process_firewall_rules_reject():
+    input = yaml.safe_load('''
+        hosts:
+          - host: www.appA.com
+            firewall_rules:
+              ip_reject:
+                - 10.192.0.1
+                - 10.192.0.2
+            servers:
+              - localhost:8081
+              - localhost:8082
+          - host: www.appB.com
+            servers:
+              - localhost:9081
+              - localhost:9082
+        paths:
+          - path: /appA
+            servers:
+              - localhost:8081
+              - localhost:8082
+          - path: /appB
+            servers:
+              - localhost:9081
+              - localhost:9082
+    ''')
+    results = process_firewall_rules_flag(input, "www.appA.com", "10.192.0.1")
+    assert results == False  
+    
+
+def test_process_firewall_rules_accept():
+    input = yaml.safe_load('''
+        hosts:
+          - host: www.appA.com
+            firewall_rules:
+              ip_reject:
+                - 10.192.0.1
+                - 10.192.0.2
+            servers:
+              - localhost:8081
+              - localhost:8082
+          - host: www.appB.com
+            servers:
+              - localhost:9081
+              - localhost:9082
+        paths:
+          - path: /appA
+            servers:
+              - localhost:8081
+              - localhost:8082
+              - path: /appB
+            servers:
+              - localhost:9081
+              - localhost:9082
+    ''')
+    results = process_firewall_rules_flag(input, "www.appA.com", "55.55.55.55")
+    assert results == True

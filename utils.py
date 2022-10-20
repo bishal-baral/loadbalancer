@@ -1,6 +1,5 @@
 from models import Server
 import yaml
-import random
 
 '''
 functions to help instantiate the servers defined in loadbalancer.yaml into Server objects
@@ -26,7 +25,8 @@ def get_healthy_server(host, register):
         return None
 
 def process_rules(config, host, rules, modify):
-    modify_options = {"header": "header_rules", "param": "param_rules"}
+    modify_options = {"header": "header_rules", 
+                      "param": "param_rules"}
     for entry in config.get('hosts', []):
         if host == entry['host']: 
             header_rules = entry.get(modify_options[modify], {})
@@ -50,3 +50,14 @@ def least_connections(servers):
     if not servers:
         return None
     return min(servers, key=lambda x: x.open_connections)
+
+def process_firewall_rules_flag(config, host, client_ip=None, path=None):
+    for entry in config.get('hosts', []):
+        if host == entry['host']:
+            firewall_rules = entry.get('firewall_rules', {})
+            if client_ip in firewall_rules.get("ip_reject", []):
+                return False
+
+            if path in firewall_rules.get("path_reject", []):
+                return False
+    return True

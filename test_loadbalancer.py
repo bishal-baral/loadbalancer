@@ -45,3 +45,19 @@ def test_path_routing_notfound(client):
     result = client.get('/random')
     assert b'Not Found' in result.data
     assert 404 == result.status_code
+
+def test_firewall_ip_reject(client):
+    result = client.get('/', headers={"Host": "www.appA.com"}, environ_base={'REMOTE_ADDR': '10.192.0.1'})
+    assert result.status_code == 403
+
+def test_firewall_ip_accept(client):
+    result = client.get('/', headers={"Host": "www.appA.com"}, environ_base={'REMOTE_ADDR': '55.55.55.55'})
+    assert result.status_code == 200
+
+def test_firewall_path_reject(client):
+    result = client.get('/messages', headers={"Host": "www.appA.com"})
+    assert result.status_code == 403
+
+def test_firewall_path_accept(client):
+    result = client.get('/pictures', headers={"Host": "www.appA.com"})
+    assert result.status_code == 200
