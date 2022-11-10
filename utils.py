@@ -51,6 +51,13 @@ def least_connections(servers):
         return None
     return min(servers, key=lambda x: x.open_connections)
 
+def round_robin(healthy_servers, index=0):
+    try:
+        yield healthy_servers[index:]
+        yield from round_robin(healthy_servers, index+1)
+    except IndexError:
+        return None
+
 def process_firewall_rules_flag(config, host, client_ip=None, path=None):
     for entry in config.get('hosts', []):
         if host == entry['host']:

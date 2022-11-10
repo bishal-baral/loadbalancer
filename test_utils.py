@@ -1,4 +1,4 @@
-from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules, least_connections, process_firewall_rules_flag
+from utils import get_healthy_server, transform_backends_from_config, process_rules, process_rewrite_rules, least_connections, process_firewall_rules_flag, round_robin
 from models import Server
 import yaml
 
@@ -209,3 +209,21 @@ def test_process_firewall_rules_accept():
     ''')
     results = process_firewall_rules_flag(input, "www.appA.com", "55.55.55.55")
     assert results == True
+
+def test_least_connections():
+    backend1 = Server("localhost:8081")
+    backend2 = Server("localhost:8082")
+    backend3 = Server("localhost:8083")
+    servers = [backend1, backend2, backend3]
+    result1 = round_robin(servers)
+    assert result1 == backend1
+    result2 = round_robin(servers)
+    assert result2 == backend2
+    result3 = round_robin(servers)
+    assert result3 == backend3
+    result1 = round_robin(servers)
+    assert result1 == backend1
+    result2 = round_robin(servers)
+    assert result2 == backend2
+    result3 = round_robin(servers)
+    assert result3 == backend3
